@@ -5,7 +5,7 @@ var app = new Vue({
         product: "Football",
         productName: "2014",
         productInfo: "The 2014 FIFA World Cup was the 20th FIFA World Cup, the quadrennial world championship for men's national football teams organised by FIFA. It took place in Brazil from 12 June to 13 July 2014, after the country was awarded the hosting rights in. ",
-        image:"./images/2014.jpg",
+        selectedVariant: 0,
         inStock:false,
         inventory: 5,
         details: ["Air ball", "18% off", "Adidas Brand"],
@@ -36,9 +36,19 @@ var app = new Vue({
                 alert("out of stock");
 
         },
-        updateProduct(img, year){
-            this.image = img;
+        updateProduct(index, year){
+           this.selectedVariant = index;
+           console.log(index);
             this.productName = year;
+        }
+    },
+
+    computed: {
+        title(){
+            return this.brand +' '+this.productName;
+        },
+        image(){
+            return this.variants[this.selectedVariant].variantImage;
         }
     }
 });

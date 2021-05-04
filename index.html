@@ -58,16 +58,16 @@
                     </div>
                     <div class="col-md-6">
                         <div class="info">
-                            <h2>{{ productName}}</h2>
+                            <h2>{{ title}}</h2>
                             <div class="">
                                 <ul>
                                     <li v-for="detail in details">{{ detail }}</li>
                                 </ul>
-                                <div v-for="variant in variants"
+                                <div v-for="(variant, index) in variants"
                                     :key="variant.variantId"
                                     class="badge"
                                     :style="{backgroundColor: variant.color}">
-                                    <p @mouseover="updateProduct(variant.variantImage, variant.variantYear)">{{ variant.variantYear}}</p>
+                                    <p @mouseover="updateProduct(index, variant.variantYear)">{{ variant.variantYear}}</p>
                                 </div>
                             </div>
                             <div class="text-justify">{{ productInfo }}</div>
