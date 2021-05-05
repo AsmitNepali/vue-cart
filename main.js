@@ -45,10 +45,6 @@ Vue.component('product',{
 
                             <span v-else class="badge bg-danger mb-3">Out Of Stock</span>
 
-                            <div >
-                                <span class="badge bg-warning">Cart: {{ cart }}</span>
-                            </div>
-
                             <div>
                                 <a href="javascript:void(0)" @click="addToCart()" class="btn btn-primary" :disabled="!inStock">Add To Cart</a>
                             </div>
@@ -71,12 +67,21 @@ Vue.component('product',{
                                 </div>
                             </div>
                             <div class="text-justify">{{ productInfo }}</div>
+                            <h1>Review List</h1>
+                            <p v-if="!reviews.length">NO Review Yet !</p>
+                            <ul v-else>
+                            <li v-for="review in reviews">
+                            <p>Name: {{review.name}}</p>
+                            <p>Description: {{review.review}}</p>
+                            <li>
+                            </ul>
                         </div>
                     </div>
                </div>
            </div>
        </div>
    </section>
+   <product-review @review-submitted="addReview"></product-review>
     </div>`,
    data() {
         return  {
@@ -103,13 +108,15 @@ Vue.component('product',{
             },
             ],
             cart:0,
+            reviews:[],
         }
     },
     methods:{
         addToCart: function(){
+            this.$emit('add-to-cart',this.variants[this.selectedVariant].variantId);
             if(this.inventory >0)
             {
-                this.cart++;
+
                 this.inventory--;
             }
             else
@@ -120,6 +127,10 @@ Vue.component('product',{
            this.selectedVariant = index;
            console.log(index);
             this.productName = year;
+        },
+        addReview(productReview){
+            console.log(productReview)
+            this.reviews.push(productReview);
         }
     },
 
@@ -138,10 +149,55 @@ Vue.component('product',{
         }
     }
 });
+
+Vue.component('product-review',{
+    template:`
+    <div>
+    <div class="container">
+    <form @submit.prevent="onSubmit">
+    <div class="mb-3">
+  <label for="exampleFormControlInput1" class="form-label">Name</label>
+  <input v-model="name" type="name" class="form-control" id="exampleFormControlInput1" placeholder="John Doe">
+</div>
+<div class="mb-3">
+  <label for="exampleFormControlTextarea1" class="form-label">Review</label>
+  <textarea v-model="review" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+</div>
+<div class="col-auto">
+    <button type="submit" class="btn btn-primary mb-3">Submit</button>
+  </div>
+</form>
+</div>
+</div>`,
+    data() {
+        return {
+                name:null,
+                review:null
+            }
+        },
+    methods:{
+        onSubmit(){
+            let productReview = {
+                name: this.name,
+                review: this.review,
+            }
+            this.$emit('review-submitted', productReview)
+            this.name = null
+            this.review = null
+        }
+    }
+    });
+
 var app = new Vue({
     el: "#app",
     data:{
         premium:true,
+        cart:[],
+    },
+    methods:{
+        updateCart(id){
+            this.cart.push(id);
+        }
     }
 
 });
